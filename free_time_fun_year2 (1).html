@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Free Time Fun! | Year 2 English</title>
+<style>
+:root{--blue:#2457a7;--pale:#e8f2ff;--yellow:#fde68a;--green:#dcfce7;--red:#fee2e2;--ink:#203047}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Trebuchet MS",Arial,sans-serif;background:linear-gradient(135deg,#eaf4ff,#fff8df);color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
+.game{width:min(720px,100%);background:#fff;border-radius:26px;overflow:hidden;box-shadow:0 18px 55px #183d7020}
+header{background:var(--blue);color:#fff;text-align:center;padding:24px 18px}
+.kicker{font-size:.82rem;font-weight:800;letter-spacing:2px;color:var(--yellow)}
+h1{font-size:clamp(2rem,7vw,3rem);margin:8px 0}
+header p{margin:0}
+.stats{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:18px}
+.pill{background:#fff;color:var(--blue);border-radius:999px;padding:8px 14px;font-weight:800}
+main{padding:clamp(18px,4vw,30px)}
+.progress{height:8px;background:#e7edf5;border-radius:20px;overflow:hidden;margin-bottom:20px}
+#bar{height:100%;width:0;background:#f5b82e;transition:width .25s}
+.prompt{background:var(--pale);border-radius:20px;padding:24px 16px;text-align:center}
+.emoji{font-size:3.5rem}
+h2{margin:10px 0;font-size:clamp(1.2rem,4vw,1.65rem)}
+.hint{color:#64748b;margin:8px 0 0}
+.answers{display:grid;gap:12px;margin:20px 0}
+.answer{border:2px solid #d7dfeb;background:#fff;border-radius:15px;padding:15px;text-align:left;font-size:1.05rem;font-weight:800;cursor:pointer;display:flex;align-items:center;gap:12px;color:var(--ink);transition:.15s}
+.answer:hover:not(:disabled){border-color:var(--blue);background:#f5f9ff;transform:translateY(-1px)}
+.letter{display:grid;place-items:center;width:34px;height:34px;flex-shrink:0;border-radius:10px;background:#e9edf3}
+.answer.correct{background:var(--green);border-color:#22a05a}
+.answer.wrong{background:var(--red);border-color:#e05252}
+.answer:disabled{cursor:default}
+.feedback{padding:14px 16px;border-radius:14px;margin:12px 0;font-weight:700;line-height:1.45}
+.feedback.good{background:var(--green)}.feedback.try{background:#fff4cf}
+button.primary{border:0;background:var(--blue);color:white;font-size:1.05rem;font-weight:800;border-radius:14px;padding:15px 20px;width:100%;cursor:pointer}
+button.primary:hover{background:#194687}button.primary:disabled{opacity:.45;cursor:not-allowed}
+footer{text-align:center;font-size:.83rem;color:#718096;padding:0 18px 22px}
+.result{text-align:center;padding:20px 4px}
+.bigscore{font-size:3.2rem;font-weight:900;color:var(--blue);margin:8px}
+.vocab{background:var(--pale);border-radius:16px;padding:16px;margin:20px 0;line-height:1.8}
+.hidden{display:none}
+@media(min-width:560px){.answers{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="game">
+<header>
+  <div class="kicker">SUPER MINDS • YEAR 2 ENGLISH</div>
+  <h1>🎮 FREE TIME FUN!</h1>
+  <p>Let's play and learn English!</p>
+  <div class="stats"><span class="pill" id="scorePill">⭐ Score: 0/8</span><span class="pill" id="questionPill">Question 1/8</span></div>
+</header>
+<main>
+  <div id="playScreen">
+    <div class="progress"><div id="bar"></div></div>
+    <section class="prompt">
+      <div class="emoji" id="emoji">⚽</div>
+      <h2 id="question">I kick a ball with my friends. What do I do?</h2>
+      <p class="hint">Choose the correct answer.</p>
+    </section>
+    <div class="answers" id="answers"></div>
+    <div id="feedback" class="feedback hidden" aria-live="polite"></div>
+    <button class="primary" id="checkBtn" disabled>Check Answer ✓</button>
+  </div>
+  <section id="resultScreen" class="result hidden">
+    <div style="font-size:4rem" id="resultEmoji">🏆</div>
+    <h2 id="resultTitle">Amazing!</h2>
+    <div class="bigscore" id="finalScore">8 / 8</div>
+    <p id="resultMessage">You are a Free Time Champion!</p>
+    <div class="vocab"><strong>📚 Vocabulary to remember</strong><br>
+    play football • ride a bike • dance • swim • read a book • sing • play badminton • draw</div>
+    <button class="primary" id="againBtn">🔄 Play Again</button>
+  </section>
+</main>
+<footer>Read the question, choose an answer, and have fun! 🌟</footer>
+</div>
+<script>
+const questions=[
+ {q:"I kick a ball with my friends. What do I do?",opts:["Play football","Ride a bike","Read a book"],a:0,e:"⚽"},
+ {q:"I use two wheels to travel in the park.",opts:["Go swimming","Ride a bike","Dance"],a:1,e:"🚲"},
+ {q:"I move my body to music.",opts:["Read a book","Play badminton","Dance"],a:2,e:"💃"},
+ {q:"I go to the pool and move in the water.",opts:["Swim","Sing","Draw"],a:0,e:"🏊"},
+ {q:"I look at words and pictures in a storybook.",opts:["Play football","Read a book","Ride a bike"],a:1,e:"📚"},
+ {q:"I use my voice to make music.",opts:["Dance","Swim","Sing"],a:2,e:"🎤"},
+ {q:"I hit a shuttlecock with a racket.",opts:["Play badminton","Read a book","Sing"],a:0,e:"🏸"},
+ {q:"I use pencils and colours to make pictures.",opts:["Swim","Draw","Play football"],a:1,e:"🎨"}
+];
+let index=0,score=0,selected=null,answered=false;
+const $=id=>document.getElementById(id);
+function render(){
+ const q=questions[index];selected=null;answered=false;
+ $("question").textContent=q.q;$("emoji").textContent=q.e;
+ $("questionPill").textContent=`Question ${index+1}/${questions.length}`;
+ $("scorePill").textContent=`⭐ Score: ${score}/${questions.length}`;
+ $("bar").style.width=`${index/questions.length*100}%`;
+ $("feedback").className="feedback hidden";$("feedback").textContent="";
+ $("checkBtn").disabled=true;$("checkBtn").textContent="Check Answer ✓";
+ $("answers").innerHTML="";
+ q.opts.forEach((opt,i)=>{
+   const b=document.createElement("button");b.className="answer";b.type="button";
+   b.innerHTML=`<span class="letter">${String.fromCharCode(65+i)}</span><span>${opt}</span>`;
+   b.addEventListener("click",()=>choose(i));$("answers").appendChild(b);
+ });
+}
+function choose(i){if(answered)return;selected=i;[...$("answers").children].forEach((b,j)=>{b.style.borderColor=j===i?"#2457a7":"";b.style.background=j===i?"#e8f2ff":""});$("checkBtn").disabled=false;}
+function check(){
+ if(selected===null||answered)return;answered=true;const q=questions[index],buttons=[...$("answers").children];
+ buttons.forEach((b,i)=>{b.disabled=true;if(i===q.a)b.classList.add("correct");else if(i===selected)b.classList.add("wrong");});
+ const good=selected===q.a;if(good)score++;
+ $("feedback").className="feedback "+(good?"good":"try");
+ $("feedback").textContent=good?"🎉 Excellent! Correct answer!":"💪 Good try! The correct answer is: "+q.opts[q.a]+".";
+ $("scorePill").textContent=`⭐ Score: ${score}/${questions.length}`;
+ $("checkBtn").textContent=index===questions.length-1?"See My Results 🏆":"Next Question ➜";
+ $("bar").style.width=`${(index+1)/questions.length*100}%`;
+}
+function next(){
+ if(!answered){check();return;}
+ if(index<questions.length-1){index++;render();}else{finish();}
+}
+function finish(){
+ $("playScreen").classList.add("hidden");$("resultScreen").classList.remove("hidden");
+ $("finalScore").textContent=`${score} / ${questions.length}`;
+ $("resultEmoji").textContent=score>=7?"🏆":score>=5?"🌟":"💪";
+ $("resultTitle").textContent=score>=7?"Amazing!":score>=5?"Good Job!":"Keep Practising!";
+ $("resultMessage").textContent=score>=7?"Fantastic! You are a Free Time Champion!":score>=5?"Well done! Keep learning new words.":"Try again to improve your score!";
+ $("questionPill").textContent="Game completed!";
+ $("bar").style.width="100%";
+}
+$("checkBtn").addEventListener("click",()=>{if(!answered)check();else next();});
+$("againBtn").addEventListener("click",()=>{index=0;score=0;$("playScreen").classList.remove("hidden");$("resultScreen").classList.add("hidden");render();});
+render();
+</script>
+</body>
+</html>
